@@ -1,12 +1,14 @@
 import './App.css'
 import DragWrap from './DragWrap'
+import { DragWrapper } from './DragWrapper'
 
 function App() {
 
   return (
-    <DragWrap>
-      <div> patata 1</div>
-    </DragWrap>
+    <DragWrapper>
+      <div>1 element</div>
+      <div>2 element</div>
+    </DragWrapper>
   )
 }
 
