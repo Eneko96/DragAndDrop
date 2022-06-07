@@ -58,7 +58,7 @@ button {
 }
 
 .draggable {
-  position: absolute;
+  position: relative;
   background-color: red;
   padding: 1rem;
   height: 3rem;

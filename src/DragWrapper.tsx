@@ -38,18 +38,14 @@ export const DragWrapper: React.FC<any> = ({ children }) => {
   const setChildRef = (index:number) => (el:React.ReactElement) => childRef[index] = el
 
   const handleMouseDown = (e: MouseEvent<HTMLElement>) => {
-    console.log(e)
-    console.warn('mouse down')
     const inElement = () => {
-      console.log(childRef, Object.keys(childRef))
       for (let i = 0; i < Object.keys(childRef).length-1; i++) {
         const element = childRef[i] as HTMLElement
+        console.log('1', e.clientX, '2', element.getBoundingClientRect().x)
         const elementPosition = element.getBoundingClientRect()
         const { clientX: x, clientY: y } = e
         const { bottom: parentBottom, top: parentTop, left: parentLeft, right: parentRight } = elementPosition
         if (x > parentLeft && x < parentRight && y > parentTop && y < parentBottom) {
-          console.log(x, y)
-          console.log('in element')
           setDragElement(i)
           setIsDragging(true)
         }
@@ -60,10 +56,12 @@ export const DragWrapper: React.FC<any> = ({ children }) => {
 
   const handleMouseMove = (e: MouseEvent<HTMLElement>) => {
     if (isDragging) {
-      console.warn('moving')
       const element = childRef[dragElement]
-      element.style.left = e.clientX - element.offsetWidth +'px'
-      element.style.top = e.clientY - element.offsetHeight +'px'
+      const recalc = +element.id !== 0 ? element.offsetWidth * Number(element.id) : element.offsetWidth
+      const recalc2 = +element.id !== 0 ? element.offsetHeight * Number(element.id) : element.offsetHeight
+      console.log(element.id)
+      element.style.left = e.clientX - recalc + 'px'
+      element.style.top = e.clientY - recalc2 +'px'
       const isTouching = Object.entries(childRef).find(([key, value]) => {
         if (key !== 'current' && key !== (dragElement as number).toString()) {
           const elementPosition = value.getBoundingClientRect() as DOMRect
@@ -86,12 +84,10 @@ export const DragWrapper: React.FC<any> = ({ children }) => {
   }
 
   const handleMouseUp = (e: MouseEvent<HTMLElement>) => {
-    console.warn('mouse up')
     if (isDragging) {
       const element = childRef[dragElement]
-      console.log(element.style.left, element.offsetWidth)
-      element.style.left = e.clientX - element.clientWidth +'px'
-      element.style.top = e.clientY - element.clientHeight +'px'
+      element.style.left = e.clientX - element.offsetWidth +'px'
+      element.style.top = e.clientY - element.offsetHeight +'px'
     }
     setIsDragging(false)
   }

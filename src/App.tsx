@@ -8,6 +8,7 @@ function App() {
     <DragWrapper>
       <div>1 element</div>
       <div>2 element</div>
+      <div>3 element</div>
     </DragWrapper>
   )
 }
