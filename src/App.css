@@ -44,7 +44,9 @@ button {
 .drag-container {
   width: 40rem;
   height: 40rem;
-  position: absolute;
+  position: relative;
+  display: flex;
+  gap: 1rem;
 }
 
 .block {
@@ -52,4 +54,14 @@ button {
   height: 10rem;
   background-color: #f98;
   position: absolute;
+  user-select: none;
+}
+
+.draggable {
+  position: absolute;
+  background-color: red;
+  padding: 1rem;
+  height: 3rem;
+  margin: 1rem;
+  user-select: none;
 }
