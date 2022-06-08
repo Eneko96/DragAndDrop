@@ -1,0 +1,9 @@
+.draggable {
+  position: relative;
+  width: 10px;
+  height: 10px;
+}
+
+.draggable:focus {
+  outline: 1rem solid red;
+}
