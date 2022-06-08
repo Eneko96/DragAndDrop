@@ -1,9 +1,8 @@
 .draggable {
   position: relative;
-  width: 10px;
-  height: 10px;
+  cursor: move;
 }
 
-.draggable:focus {
+.draggable:-webkit-over .draggable:focus {
   outline: 1rem solid red;
 }
