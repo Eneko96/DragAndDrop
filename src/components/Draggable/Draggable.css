@@ -1,5 +1,5 @@
 .draggable {
-  position: relative;
+  position: absolute;
   cursor: move;
 }
 

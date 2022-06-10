@@ -3,63 +3,57 @@ import { _inBoundaries } from "./utils"
 import { pConsole } from '@lib'
 
 interface IDragWrapper {
+  boxSize: number,
   children: ReactElement | ReactElement[]
 }
 
-export const DragWrapper: React.FC<IDragWrapper> = ({children}) => {
+export const DragWrapper: React.FC<IDragWrapper> = ({children, boxSize}) => {
   const childrenArr = Children.toArray(children)
-  const dragItem = useRef<number>()
-  const dragOverItem = useRef<number>()
-  const [list, setList] = useState((children as React.ReactNode[]).map(e => e))
+  const dragItem = useRef<HTMLDivElement|null>(null)
+  const parentRef = useRef<HTMLDivElement|null>(null)
+  // const dragOverItem = useRef<number>()
 
-  const handleDragEnd = (_e: React.DragEvent<HTMLDivElement>) => {
-    const copyList = [...list]
-    let numberDrag = dragItem.current as number
-    let numberDragOver = dragOverItem.current as number
-    const dragItemContent = copyList[numberDrag]
-    copyList.splice(numberDrag, 1);
-    copyList.splice(numberDragOver, 0, dragItemContent);
-    (numberDrag as number|null) = null;
-    (numberDragOver as number|null) = null;
-    setList(copyList);
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (parentRef.current) {
+      dragItem.current = e.currentTarget
+    }
   }
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, position: number) => {
-    (dragItem.current) = position
-    // @ts-ignore
-    pConsole(e.target.innerHtml)
+  const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
+    dragItem.current = null
   }
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>, position: number) => {
-    (dragOverItem.current) = position
-    // @ts-ignore
-    pConsole(e.target.innerHTML)
+  const handleMouseMove = (e: React.MouseEvent<HTMLInputElement>) => {
+    if (dragItem.current) {
+      pConsole('on move')
+      console.log(e.clientX, e.clientY)
+      dragItem.current.style.left = e.clientX - dragItem.current.offsetWidth + 'px'
+      dragItem.current.style.top = e.clientY - dragItem.current.offsetHeight + 'px'
+    }
   }
 
-  const clonedArray = (child: ReactElement, idx:number) => (
-    cloneElement(child, {
-      key: idx,
-      onDragEnd: handleDragEnd,
-      onDragStart: (e: any) => handleDragStart(e,idx),
-      onDragOver: (e: any) => e.preventDefault(),
-      onDragEnter: (e: any) => handleDragOver(e,idx)
+  const handleMouseEnter = (e: any) => {}
+
+  const handleMouseOver = (e: any) => {}
+
+  const ClonedArray = ({child, idx}: {child: ReactElement, idx:number}) => (
+    cloneElement((child), {
+      parentRef,
+      id: idx,
+      onMouseDown: handleMouseDown,
+      onMouseOver: handleMouseOver,
+      boxSize
     })
   )
 
   return (
     <div 
-      style={{ width: '40rem', height: '40rem', backgroundColor: 'blue', display: 'flex', gap: '2rem' }}
+      style={{ width: '40rem', height: '40rem', backgroundColor: 'blue', display: 'flex', gap: '2rem', position:'relative' }}
+      ref={parentRef}
+      onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
     >
-      {childrenArr.map((child: ReactElement, idx:number) =>
-        clonedArray(child, idx)
-        // return <div key={idx}
-        // draggable
-        // onDragEnd={handleDragEnd}
-        // onDragStart={(e) => handleDragStart(e,idx)}
-        // onDragEnter={(e) => handleDragOver(e,idx)}
-        // onDragOver={(e) => e.preventDefault()}
-        // style={{ height: 'fit-content', transition: 'all 1s ease-in'}}
-        // >{child}</div>
+      {childrenArr.map((child: any, idx:number) => <ClonedArray key={idx} child={child} idx={idx}/>
       )}
     </div>
   )

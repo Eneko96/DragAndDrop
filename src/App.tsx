@@ -5,10 +5,13 @@ import { Draggable } from './components/Draggable/Draggable'
 function App() {
 
   return (
-    <DragWrapper>
-      <Draggable id='1'>First Element</Draggable>
-      <Draggable id='2'>Second Element</Draggable>
-      <Draggable id='3'>Third Element</Draggable>
+    <DragWrapper boxSize={100}>
+      <Draggable>Element</Draggable>
+      <Draggable>Element</Draggable>
+      <Draggable>Element</Draggable>
+      <Draggable>Element</Draggable>
+      <Draggable>Element</Draggable>
+      <Draggable>Element</Draggable>
     </DragWrapper>
   )
 }
