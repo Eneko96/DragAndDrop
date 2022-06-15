@@ -1,4 +1,4 @@
-import React, { Children, cloneElement, ReactElement, useRef, useState } from "react"
+import React, { Children, cloneElement, ReactElement, useEffect, useRef, useState } from "react"
 import { _inBoundaries } from "./utils"
 import { pConsole } from '@lib'
 
@@ -11,7 +11,24 @@ export const DragWrapper: React.FC<IDragWrapper> = ({children, boxSize}) => {
   const childrenArr = Children.toArray(children)
   const dragItem = useRef<HTMLDivElement|null>(null)
   const parentRef = useRef<HTMLDivElement|null>(null)
+  const [jIndex, setJIndex] = useState<number>(0)
   // const dragOverItem = useRef<number>()
+
+  useEffect(() => {
+    if (parentRef.current) {
+      const parentRight = parentRef.current.offsetLeft + parentRef.current.offsetWidth
+      let isJump = null
+      let accBox = 0
+      let count = 0
+      while (!isJump) {
+        accBox += (boxSize + 10) * count
+        if (accBox >= parentRight) isJump = count
+        else ++count
+      }
+      if (isJump) setJIndex(isJump)
+      console.log(isJump, count)
+    }
+  }, [])
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (parentRef.current) {
@@ -40,6 +57,7 @@ export const DragWrapper: React.FC<IDragWrapper> = ({children, boxSize}) => {
     cloneElement((child), {
       parentRef,
       id: idx,
+      jump: jIndex,
       onMouseDown: handleMouseDown,
       onMouseOver: handleMouseOver,
       boxSize

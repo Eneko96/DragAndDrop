@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import './Draggable.css'
 
 interface IDraggable {
@@ -6,18 +6,18 @@ interface IDraggable {
   onMouseDown?: React.MouseEventHandler<HTMLDivElement>,
   onMouseOver?:  React.MouseEventHandler<HTMLDivElement>,
   boxSize?: number,
-  parentRef?: React.RefObject<HTMLDivElement>
+  parentRef?: React.RefObject<HTMLDivElement>,
+  jump: number,
   children?: React.ReactNode
 }
 
-export const Draggable: React.FC<IDraggable> = ({ id, children, onMouseOver, onMouseDown, boxSize, parentRef }) => {
+export const Draggable: React.FC<IDraggable> = ({ id, children, onMouseOver, onMouseDown, boxSize, parentRef, jump: jIndex }) => {
   const ref = useRef<HTMLDivElement>(null)
 
   const tid = id as number
   const tboxSize = boxSize as number
   
   useEffect(() => {
-    let hasJump:boolean = false
     if (ref.current) {
       ref.current.style.height = boxSize + 'px'
       ref.current.style.width = boxSize + 'px'
@@ -26,12 +26,13 @@ export const Draggable: React.FC<IDraggable> = ({ id, children, onMouseOver, onM
         const parentRight = parentRef.current.offsetLeft + parentRef.current.offsetWidth
         if (right >= parentRight) {
           console.log('out of boundaries', id)
-          ref.current.style.top = tboxSize + 30 + 'px'
-          hasJump = true
+          ref.current.style.top = (tboxSize + 30) * tid%jIndex + 'px'
         }
       }
-      if (hasJump) {
-        ref.current.style.left = (+ref.current.offsetWidth + 10) * (tid) + 'px'
+      console.log('jIndex', jIndex)
+      if (tid%jIndex === 0) ref.current.style.top = (tboxSize + 10) * tid%jIndex + 'px'
+      if (jIndex) {
+        ref.current.style.left = (+ref.current.offsetWidth + 10) * (tid%jIndex) + 'px'
       } else {
         ref.current.style.left = (+ref.current.offsetWidth + 10) * tid + 'px'
       }
